@@ -42,6 +42,14 @@ The Claude CLI must be on your `$PATH`.
 go install github.com/revans/skill-compress/cmd/skill-compress@latest
 ```
 
+`go install` places the binary in `$GOPATH/bin` (usually `~/go/bin`). If you get `command not found`, that directory isn't in your `$PATH`:
+
+```bash
+export PATH="$PATH:$(go env GOPATH)/bin"
+```
+
+Add that line to your `~/.bashrc` or `~/.zshrc` to make it permanent.
+
 Or build from source:
 
 ```bash
