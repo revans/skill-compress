@@ -9,7 +9,7 @@ A companion to [skill-eval](https://github.com/revans/skill-eval). Both tools sh
 ## Contents
 
 - [Getting started](#getting-started)
-- [Two-step workflow](#two-step-workflow)
+- [Recommended workflow](#recommended-workflow)
 - [What the compressor removes and keeps](#what-the-compressor-removes-and-keeps)
 - [Validation](#validation)
 - [Flag reference](#flag-reference)
@@ -54,7 +54,7 @@ default_model: claude-sonnet-4-6
 
 All other fields are optional — see `.skill-eval.yml.example` for defaults. If you already have `.skill-eval.yml` from skill-eval, no changes needed.
 
-## Two-step workflow
+## Recommended workflow
 
 **Step 1 — compress and validate:**
 
@@ -88,6 +88,14 @@ skill-compress path/to/my-skill.md --apply
 ```
 
 Overwrites the original with the compressed copy. Blocked if the last validation run failed.
+
+**Step 3 — verify with skill-eval:**
+
+```bash
+skill-eval --prompt my-skill.md
+```
+
+skill-compress's built-in validation is a smoke test — it checks that the compressed prompt produces expected output for your eval inputs. It does not tell you whether the prompt is still load-bearing. Run [skill-eval](https://github.com/revans/skill-eval) after applying to confirm the compressed prompt still changes model behavior in the ways you intended, and hasn't become obsolete or harmful.
 
 ## What the compressor removes and keeps
 
