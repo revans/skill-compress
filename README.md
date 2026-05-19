@@ -106,6 +106,16 @@ Overwrites the original with the compressed copy. Blocked if the last validation
 - Every edge case or exception that changes behavior
 - Negative examples that show what NOT to do, when they demonstrate a non-obvious failure mode
 
+### Why the "why" gets removed
+
+The rationale behind a rule is valuable — it just belongs in the agent, not the skill.
+
+A skill is executable instruction: precise, self-contained, no excess. An agent holds the goals and context that determine *which* skill to invoke and *when*. Putting the "why" in the skill conflates those two layers.
+
+There's also a practical risk: rationale prose gives the model material to reason its way around a rule. A prompt that says "always return JSON" is unambiguous. A prompt that says "always return JSON because the downstream parser expects structured data" hands the model an implicit exception — it can now decide the downstream concern doesn't apply in a given context and deviate. The rule alone is not negotiable. The rule plus explanation becomes negotiable.
+
+If removing the "why" makes a rule feel ambiguous, that's a signal the rule itself is underspecified — make it more concrete rather than restoring the rationale.
+
 ## Validation
 
 If you have an `evals.yml` (from skill-eval or written manually), skill-compress runs any evals whose `tests` field matches the prompt's ID against the compressed version before letting you apply it.
