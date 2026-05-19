@@ -1,6 +1,8 @@
 # skill-compress
 
-Compresses Claude Code skill prompts — strips hedge language, redundant examples, and meta-commentary while preserving every behavioral instruction — then validates the compressed version against your eval suite before you apply it.
+Compresses any prompt file — strips hedge language, redundant examples, and meta-commentary while preserving every behavioral instruction — then validates the compressed version against your eval suite before you apply it.
+
+Works on system prompts, agent instructions, Claude Code skill files, or any plain-text prompt. Think of it as a lossless compressor for prompts: smaller file, same behavior.
 
 A companion to [skill-eval](https://github.com/revans/skill-eval). Both tools share the same `.skill-eval.yml` config and `evals.yml` format, so if you're already running skill-eval in a project, skill-compress plugs straight in.
 
@@ -106,12 +108,12 @@ Overwrites the original with the compressed copy. Blocked if the last validation
 
 ## Validation
 
-If you have an `evals.yml` (from skill-eval or written manually), skill-compress runs any evals whose `tests` field matches the skill's substrate ID against the compressed prompt before letting you apply it.
+If you have an `evals.yml` (from skill-eval or written manually), skill-compress runs any evals whose `tests` field matches the prompt's ID against the compressed version before letting you apply it.
 
-The substrate ID is derived from the skill filename:
-- `RU-001-params-expect.md` → `RU-001`
-- `my-feature/skill.md` → `my-feature`
-- `my-skill.md` → `my-skill`
+The prompt ID is derived from the filename:
+- `my-agent.md` → `my-agent`
+- `prompts/summarizer.md` → `summarizer` (parent dir name used as fallback when filename is generic)
+- `RU-001-params.md` → `RU-001` (uppercase prefix pattern extracted automatically)
 
 If no evals exist for a skill, compression still runs — validation is skipped and the result is marked `unvalidated`.
 
@@ -138,7 +140,7 @@ See `evals.example.yml` for a working example. The format is the same as skill-e
 
 ```yaml
 - id: my-skill-basic
-  tests: my-skill          # substrate ID — links this eval to a skill
+  tests: my-skill          # prompt ID — links this eval to a skill
   input: "some user input"
   assert:
     - contains: "expected output"
@@ -158,13 +160,13 @@ See `evals.example.yml` for a working example. The format is the same as skill-e
 
 ```
 evals/compress/
-  <substrate-id>/
+  <prompt-id>/
     my-skill.md    # compressed copy
     diff.md        # unified diff (original → compressed)
     result.yml     # structured result
 ```
 
-`result.yml` fields: `substrate_id`, `original_chars`, `compressed_chars`, `reduction_pct`, `model`, `ran_at`, `evals_matched`, `validation`, `overall` (`pass` | `fail` | `unvalidated`).
+`result.yml` fields: `prompt_id`, `original_chars`, `compressed_chars`, `reduction_pct`, `model`, `ran_at`, `evals_matched`, `validation`, `overall` (`pass` | `fail` | `unvalidated`).
 
 ## Exit codes
 

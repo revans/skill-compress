@@ -28,9 +28,9 @@ type rawEval struct {
 	Assert []map[string]string `yaml:"assert"`
 }
 
-// LoadEvalsForSubstrate reads evals.yml and returns all evals where tests == substrateID.
+// LoadEvalsFor reads evals.yml and returns all evals where tests == promptID.
 // Returns nil (not an error) when the evals file does not exist.
-func LoadEvalsForSubstrate(evalsFile, substrateID string) ([]Eval, error) {
+func LoadEvalsFor(evalsFile, promptID string) ([]Eval, error) {
 	data, err := os.ReadFile(evalsFile)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -46,7 +46,7 @@ func LoadEvalsForSubstrate(evalsFile, substrateID string) ([]Eval, error) {
 
 	var matched []Eval
 	for _, r := range raws {
-		if r.Tests != substrateID {
+		if r.Tests != promptID {
 			continue
 		}
 		assertions := make([]Assertion, 0, len(r.Assert))

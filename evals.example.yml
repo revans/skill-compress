@@ -1,8 +1,8 @@
-# Each entry tests one skill prompt file.
+# Each entry tests one prompt file.
 #
 # id:     unique identifier for this test case
-# tests:  the substrate ID this eval targets — derived from the skill filename
-#         (e.g. "RU-001" from "RU-001-params-expect.md", or the parent dir name)
+# tests:  the prompt ID this eval targets — derived from the prompt filename
+#         (e.g. "summarizer" from "summarizer.md", or the parent dir name)
 # input:  the user message sent to the compressed prompt during validation
 # assert: list of assertions checked against the model's response
 #
@@ -12,16 +12,22 @@
 #   matches:      output must match this regex
 #   not_matches:  output must not match this regex
 
-- id: RU-001-basic
-  tests: RU-001
-  input: "Generate a function that accepts a name parameter"
+- id: summarizer-basic
+  tests: summarizer
+  input: "Summarize this article: The quick brown fox jumps over the lazy dog."
   assert:
-    - contains: "def "
-    - not_contains: "TODO"
+    - contains: "fox"
+    - not_contains: "I cannot"
 
-- id: RU-001-edge-no-params
-  tests: RU-001
-  input: "Generate a function with no parameters"
+- id: summarizer-rejects-empty
+  tests: summarizer
+  input: ""
   assert:
-    - matches: "def \w+\(\)"
-    - not_contains: "name"
+    - not_matches: "^$"
+
+- id: code-reviewer-flags-unused-vars
+  tests: code-reviewer
+  input: "Review this code: def foo():\n    x = 1\n    return 42"
+  assert:
+    - contains: "unused"
+    - not_contains: "looks good"

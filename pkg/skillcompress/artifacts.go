@@ -13,7 +13,7 @@ import (
 
 // CompressResult is the structured output written to result.yml.
 type CompressResult struct {
-	SubstrateID     string                 `yaml:"substrate_id"`
+	PromptID        string                 `yaml:"prompt_id"`
 	OriginalFile    string                 `yaml:"original_file"`
 	CompressedFile  string                 `yaml:"compressed_file"`
 	OriginalChars   int                    `yaml:"original_chars"`
@@ -38,9 +38,9 @@ type assertionRecord struct {
 	Result string `yaml:"result"`
 }
 
-// WorkKeyFromPath derives the key used for the compress working directory.
-// For substrate rule files (e.g. RU-001-params-expect.md) it extracts the ID prefix.
-// For other files it falls back to the parent directory name, then the filename stem.
+// WorkKeyFromPath derives the prompt ID used for the compress working directory.
+// Files with an uppercase prefix like RU-001-name.md → "RU-001".
+// Otherwise falls back to the parent directory name, then the filename stem.
 func WorkKeyFromPath(path string) string {
 	base := filepath.Base(path)
 	if m := regexp.MustCompile(`^([A-Z]+-\d+)`).FindString(base); m != "" {
@@ -53,9 +53,9 @@ func WorkKeyFromPath(path string) string {
 	return base[:len(base)-len(ext)]
 }
 
-// CompressWorkDir returns the working directory for a substrate ID under baseDir.
-func CompressWorkDir(baseDir, substrateID string) string {
-	return filepath.Join(baseDir, substrateID)
+// CompressWorkDir returns the working directory for a prompt ID under baseDir.
+func CompressWorkDir(baseDir, promptID string) string {
+	return filepath.Join(baseDir, promptID)
 }
 
 // WriteCompressedCopy writes compressedText to workDir/{basename of originalPath}.
@@ -108,7 +108,7 @@ func Promote(originalPath, compressedPath string) error {
 }
 
 // BuildResult constructs a CompressResult from compression and validation outputs.
-func BuildResult(substrateID, originalPath, compressedPath, model,
+func BuildResult(promptID, originalPath, compressedPath, model,
 	originalText, compressedText string,
 	evals []Eval, validationResults []EvalValidationResult, allPassed bool) CompressResult {
 
@@ -148,7 +148,7 @@ func BuildResult(substrateID, originalPath, compressedPath, model,
 	}
 
 	return CompressResult{
-		SubstrateID:     substrateID,
+		PromptID:        promptID,
 		OriginalFile:    originalPath,
 		CompressedFile:  compressedPath,
 		OriginalChars:   origChars,
