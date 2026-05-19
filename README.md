@@ -1,8 +1,10 @@
 # skill-compress
 
-Compresses any prompt file — strips hedge language, redundant examples, and meta-commentary while preserving every behavioral instruction — then validates the compressed version against your eval suite before you apply it.
+Removes the specific kinds of content that degrade instruction clarity from any prompt file — hedge language, redundant examples, rationale prose, meta-commentary — while preserving every behavioral instruction. Then validates the compressed version against your eval suite before you apply it.
 
-Works on system prompts, agent instructions, Claude Code skill files, or any plain-text prompt. Think of it as a lossless compressor for prompts: smaller file, same behavior.
+This is not primarily about token savings, though that is a real side effect. It is about signal clarity: removing everything that makes instructions ambiguous, negotiable, or harder to follow. Token count drops as a consequence of doing that work well.
+
+Works on system prompts, agent instructions, Claude Code skill files, or any plain-text prompt.
 
 A companion to [skill-eval](https://github.com/revans/skill-eval). Both tools share the same `.skill-eval.yml` config and `evals.yml` format, so if you're already running skill-eval in a project, skill-compress plugs straight in.
 
