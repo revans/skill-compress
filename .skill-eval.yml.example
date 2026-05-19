@@ -1,0 +1,14 @@
+# Required. The Claude model used for compression and validation.
+default_model: claude-sonnet-4-6
+
+# Optional. Path to your evals file. Default: evals.yml
+evals_file: evals.yml
+
+# Optional. Seconds allowed per eval validation call. Default: 60
+per_eval_timeout_seconds: 60
+
+# Optional. Directory for compressed output and diffs. Default: evals/compress
+compress_dir: evals/compress
+
+# Optional. Seconds allowed for the compression call. Default: 120
+compress_timeout_seconds: 120

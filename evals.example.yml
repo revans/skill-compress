@@ -1,0 +1,27 @@
+# Each entry tests one skill prompt file.
+#
+# id:     unique identifier for this test case
+# tests:  the substrate ID this eval targets — derived from the skill filename
+#         (e.g. "RU-001" from "RU-001-params-expect.md", or the parent dir name)
+# input:  the user message sent to the compressed prompt during validation
+# assert: list of assertions checked against the model's response
+#
+# Assertion types:
+#   contains:     output must include this string
+#   not_contains: output must not include this string
+#   matches:      output must match this regex
+#   not_matches:  output must not match this regex
+
+- id: RU-001-basic
+  tests: RU-001
+  input: "Generate a function that accepts a name parameter"
+  assert:
+    - contains: "def "
+    - not_contains: "TODO"
+
+- id: RU-001-edge-no-params
+  tests: RU-001
+  input: "Generate a function with no parameters"
+  assert:
+    - matches: "def \w+\(\)"
+    - not_contains: "name"
