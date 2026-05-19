@@ -10,14 +10,20 @@ import (
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "init" {
+		os.Exit(runInit(os.Args[2:]))
+	}
+
 	apply := flag.Bool("apply", false, "overwrite the original file with the compressed copy")
 	config := flag.String("config", ".skill-eval.yml", "path to config file")
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: skill-compress <path> [--apply] [--config <path>]\n\n")
-		fmt.Fprintf(os.Stderr, "  Compresses a skill prompt and validates it against matching tests.\n")
+		fmt.Fprintf(os.Stderr, "Usage: skill-compress <path> [--apply] [--config <path>]\n")
+		fmt.Fprintf(os.Stderr, "       skill-compress init [--model <model>] [--config <path>]\n\n")
+		fmt.Fprintf(os.Stderr, "  Compresses a prompt and validates it against matching tests.\n")
 		fmt.Fprintf(os.Stderr, "  The compressed copy is written to evals/compress/{id}/.\n\n")
 		fmt.Fprintf(os.Stderr, "  Run without --apply to compress and validate.\n")
-		fmt.Fprintf(os.Stderr, "  Run with --apply to promote the compressed copy over the original.\n\n")
+		fmt.Fprintf(os.Stderr, "  Run with --apply to promote the compressed copy over the original.\n")
+		fmt.Fprintf(os.Stderr, "  Run init to create or update .skill-eval.yml.\n\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
@@ -28,6 +34,19 @@ func main() {
 	}
 
 	os.Exit(run(flag.Arg(0), *apply, *config))
+}
+
+func runInit(args []string) int {
+	fs := flag.NewFlagSet("init", flag.ExitOnError)
+	model := fs.String("model", "claude-sonnet-4-6", "Claude model to set as default_model")
+	config := fs.String("config", ".skill-eval.yml", "path to config file")
+	fs.Parse(args)
+
+	if err := skillcompress.Init(*config, *model); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		return 1
+	}
+	return 0
 }
 
 func run(originalPath string, apply bool, configPath string) int {

@@ -58,11 +58,19 @@ go build -o skill-compress ./cmd/skill-compress
 
 ### 3. Create `.skill-eval.yml`
 
-```yaml
-default_model: claude-sonnet-4-6
+```bash
+skill-compress init
 ```
 
-All other fields are optional — see `.skill-eval.yml.example` for defaults. If you already have `.skill-eval.yml` from skill-eval, no changes needed.
+Creates `.skill-eval.yml` with `default_model: claude-sonnet-4-6` and all optional fields commented out. If the file already exists, `init` adds `default_model` if it's missing and does nothing if it's already set.
+
+To use a different model:
+
+```bash
+skill-compress init --model claude-opus-4-7
+```
+
+If you already have `.skill-eval.yml` from skill-eval, no changes needed — the files are compatible.
 
 ## Recommended workflow
 
